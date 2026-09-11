@@ -15,8 +15,6 @@ A barra inferior de gentle-pi constrúe o identificador do modelo dentro de `bui
 modelId: model?.id ?? "no-model",
 ```
 
-No repo tamén se inclúe unha extensión (`show-provider-gentle-ai.ts`) que intentaba interceptar `ctx.model` para prefixar o provedor, pero **non funciona por si soa**: gentle-pi monta o `modelId` directamente desde o seu propio obxecto de modelo, á marxe da extensión. A solución fiable é cambiar esa liña no propio core, e é o que fai a función bash `patch-pi-footer`.
-
 ## 📜 A función: `patch-pi-footer`
 
 Función de bash que fai unha copia de seguridade de `gentle-shell.ts` e substitúe a liña pola versión co provedor:

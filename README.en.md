@@ -15,8 +15,6 @@ gentle-pi's shell bar builds the model identifier inside `buildShellBarModel()`,
 modelId: model?.id ?? "no-model",
 ```
 
-The repo also ships an extension (`show-provider-gentle-ai.ts`) that tried to intercept `ctx.model` to prefix the provider, but it **does not work on its own**: gentle-pi builds `modelId` directly from its own model object, outside the extension's reach. The reliable fix is to change that line in the core itself, and that is exactly what the `patch-pi-footer` bash function does.
-
 ## 📜 The function: `patch-pi-footer`
 
 A bash function that backs up `gentle-shell.ts` and replaces the line with the provider-aware version:
