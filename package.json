@@ -1,0 +1,32 @@
+{
+	"name": "pi-show-provider-gentle-pi",
+	"version": "1.0.0",
+	"description": "Pi package with /on and /off commands to show provider/model instead of only model in the gentle-pi shell bar.",
+	"license": "MIT",
+	"type": "module",
+	"keywords": [
+		"pi-package",
+		"pi",
+		"gentle-pi",
+		"gentle-ai",
+		"extension",
+		"shell-bar",
+		"provider"
+	],
+	"pi": {
+		"extensions": [
+			"./extensions"
+		]
+	},
+	"scripts": {
+		"test": "node --experimental-strip-types --test tests/*.test.ts"
+	},
+	"peerDependencies": {
+		"@earendil-works/pi-coding-agent": ">=0.85.1"
+	},
+	"peerDependenciesMeta": {
+		"@earendil-works/pi-coding-agent": {
+			"optional": true
+		}
+	}
+}
