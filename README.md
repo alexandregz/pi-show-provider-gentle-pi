@@ -58,7 +58,8 @@ ls -la ~/.pi/agent/npm/node_modules/gentle-pi/extensions/gentle-shell.ts.*
 
 ## ⚙️ Detalles
 
-- **Detección de estado**: mira o fragmento real do ficheiro, non un nome de método. Se contén `${model.provider}/${model.id}` está acendido; se contén `model?.id ?? "no-model"` está apagado. Se non recoñece ningún dos dous, avisa e non toca nada (seguridade).
+- **Detección de estado**: mira o **campo `modelId` completo**, non unha cadea solta nin un nome de método. Se contén `modelId: model ? \`${model.provider}/${model.id}\` : "no-model"` está acendido; se contén `modelId: model?.id ?? "no-model"` está apagado. Se non recoñece ningún dos dous, avisa e non toca nada (seguridade).
+  Isto é deliberado: en versións recentes de gentle-pi a cadea `${model.provider}/${model.id}` tamén aparece noutros puntos do ficheiro (por exemplo, na clave de *adaptive reasoning*). Unha detección por cadea solta daría sempre «xa parcheado» e o interruptor nunca actuaría, por iso se ancorou ao campo `modelId`.
 - **Camiño do ficheiro** (orde de precedencia):
   1. variable de contorno `PI_SHOW_PROVIDER_GENTLE_PI_TARGET`;
   2. resolución como paquete irmán dentro do mesmo `node_modules` (funciona en instalacións globais e de proxecto);
@@ -79,7 +80,9 @@ Corre 7 test sobre os helpers puros con copias temporais do ficheiro — **nunca
 | --- | --- |
 | `extensions/show-provider.ts` | A extensión de Pi que rexistra `/show-provider-gentle-pi on/off`. |
 | `tests/show-provider.test.ts` | Tests dos helpers (idempotencia e ida-e-volta). |
-| `bashrc` | A función `patch-pi-footer` (antiga solución); mantida como referencia. |
+| `bashrc` | A función `patch-pi-footer` (antiga solución de shell); mantida como referencia. |
+| `package.json` | Metadatos do paquete Pi (`pi.extensions`, script `npm test`). |
+| `LICENSE` | Licenza MIT. |
 | `README.md` / `README.en.md` | Esta documentación (galego / inglés). |
 
 ## 📄 Licenza

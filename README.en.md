@@ -58,7 +58,8 @@ ls -la ~/.pi/agent/npm/node_modules/gentle-pi/extensions/gentle-shell.ts.*
 
 ## ⚙️ Details
 
-- **State detection**: it inspects the real file fragment, not a method name. If it contains `${model.provider}/${model.id}` it is on; if it contains `model?.id ?? "no-model"` it is off. If it recognizes neither, it warns and touches nothing (safety).
+- **State detection**: it inspects the **full `modelId` field**, not a bare substring and not a method name. If it contains `modelId: model ? \`${model.provider}/${model.id}\` : "no-model"` it is on; if it contains `modelId: model?.id ?? "no-model"` it is off. If it recognizes neither, it warns and touches nothing (safety).
+  This is deliberate: in recent gentle-pi releases the string `${model.provider}/${model.id}` also appears elsewhere in the file (for example, in the adaptive-reasoning key), so a bare-substring match would always report "already patched" and the toggle would never act. That is why detection is anchored to the `modelId` field.
 - **Target file resolution** (precedence order):
   1. the `PI_SHOW_PROVIDER_GENTLE_PI_TARGET` environment variable;
   2. sibling-package resolution inside the same `node_modules` (works for both global and project-local installs);
@@ -79,7 +80,9 @@ Runs 7 tests over the pure helpers with temporary copies of the file — it **ne
 | --- | --- |
 | `extensions/show-provider.ts` | The Pi extension registering `/show-provider-gentle-pi on/off`. |
 | `tests/show-provider.test.ts` | Tests for the helpers (idempotency and round-trip). |
-| `bashrc` | The `patch-pi-footer` function (the old solution); kept for reference. |
+| `bashrc` | The `patch-pi-footer` function (the old shell solution); kept for reference. |
+| `package.json` | Pi package metadata (`pi.extensions`, `npm test` script). |
+| `LICENSE` | MIT license. |
 | `README.md` / `README.en.md` | This documentation (Galician / English). |
 
 ## 📄 License

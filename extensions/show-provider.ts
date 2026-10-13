@@ -23,16 +23,18 @@ import { homedir } from "node:os";
 import { dirname, join, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 
-// The fragment we look for to decide the current state. `gentle-shell.ts` writes
-// `modelId` with leading indentation, so we match a substring, not the whole line
-// (mirrors the behaviour of the original `sed`).
+// We anchor detection to the exact `modelId` field assignment, never to a bare
+// substring: newer gentle-pi releases use `` `${model.provider}/${model.id}` ``
+// elsewhere in the file (e.g. the adaptive-reasoning key), so a loose substring
+// match would always report "already patched" and the toggle would never act.
+// `gentle-shell.ts` writes `modelId` with leading indentation, so we match the
+// assignment substring, not the whole line (mirrors the original `sed`).
 const ORIGINAL_FRAG = `modelId: model?.id ?? "no-model"`;
 const PATCHED_FRAG = `modelId: model ? \`\${model.provider}/\${model.id}\` : "no-model"`;
-const PATCHED_MARKER = `\${model.provider}/\${model.id}`;
 
 /** True when the text is already showing provider/model. */
 export function isProviderShown(text: string): boolean {
-	return text.includes(PATCHED_MARKER);
+	return text.includes(PATCHED_FRAG);
 }
 
 /** True when the text still has the original `no-model` fragment. */
@@ -76,9 +78,13 @@ const DEFAULT_TARGET = (home = homedir()) => join(home, ".pi/agent/npm/node_modu
 
 function siblingTarget(): string | undefined {
 	// This file lives at <root>/node_modules/<pkg>/extensions/show-provider.ts,
-	// so gentle-pi, when installed in the same root, is a sibling package.
+	// so gentle-pi, when installed in the same root, is a sibling package. The
+	// target must be <root>/node_modules/gentle-pi/extensions/gentle-shell.ts,
+	// i.e. two levels up (pkg -> node_modules) then the sibling dir. An extra
+	// "node_modules" segment here would produce a path that never exists and
+	// silently fall back to the default, breaking project-local installs.
 	const ownDir = dirname(fileURLToPath(import.meta.url));
-	const candidate = join(ownDir, "..", "..", "node_modules/gentle-pi/extensions/gentle-shell.ts");
+	const candidate = join(ownDir, "..", "..", "gentle-pi/extensions/gentle-shell.ts");
 	return existsSync(candidate) ? candidate : undefined;
 }
 
