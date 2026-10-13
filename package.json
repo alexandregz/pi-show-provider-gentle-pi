@@ -1,6 +1,6 @@
 {
 	"name": "pi-show-provider-gentle-pi",
-	"version": "1.0.0",
+	"version": "1.0.1",
 	"description": "Pi package with a /show-provider-gentle-pi on|off command to show provider/model instead of only model in the gentle-pi shell bar.",
 	"license": "MIT",
 	"type": "module",
